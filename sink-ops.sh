@@ -55,7 +55,6 @@ sink_dialog() {
         zenity --title='Opções de Sink' \
         --list --text='Ações disponíveis para a sink '"$1"':' --radiolist --column 'Escolha' --column 'Descrição' \
         'CMD1' 'Editar descrição' \
-        'CMD2' 'Alterar saída definitiva' \
         'CMD3' 'Deletar sink'
     )
     case "$resp" in
@@ -64,9 +63,6 @@ sink_dialog() {
             ;;
         'Deletar sink')
             "$CURDIR"/sink-ops.sh delete_sink "$1"
-            ;;
-        'Alterar saída definitiva')
-            "$CURDIR"/sink-ops.sh change_slave "$1"
             ;;
     esac
 }
