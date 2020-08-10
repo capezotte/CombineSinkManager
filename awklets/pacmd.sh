@@ -43,15 +43,15 @@ gen_pa_commands() {
     local sinkn
     readarray -t CSINKS < <(get_combine_sinks)
     i=0
-    echo -n > /tmp/default.panew
-    cmd1='.include /etc/pulse/default.pa'
+    echo -n > ~/.config/pulse/csm.pa
+    cmd1=''
     cmd2=''
     for datum in "${CSINKS[@]}"; do
         i=$((i%4))
         case $i in
             0) #índice, nem ligo, só imprime o anterior
-                echo "$cmd1" >> /tmp/default.panew
-                echo "$cmd2" >> /tmp/default.panew
+                echo "$cmd1" >> ~/.config/pulse/csm.pa
+                echo "$cmd2" >> ~/.config/pulse/csm.pa
                 cmd1='load-module module-combine-sink'
                 cmd2=''
                 ;;
@@ -69,8 +69,11 @@ gen_pa_commands() {
         esac
         let i++
     done
-    echo "$cmd1" >> /tmp/default.panew
-    echo "$cmd2" >> /tmp/default.panew # Copia o último canal
-    zenity --title='Prévia do arquivo' --text-info --filename='/tmp/default.panew' --checkbox="Substituir o arquivo $HOME/.config/pulse/default.pa" && \
-    mv -f /tmp/default.panew "$HOME/.config/pulse/default.pa"
+    echo "$cmd1" >> ~/.config/pulse/csm.pa
+    echo "$cmd2" >> ~/.config/pulse/csm.pa # Copia o último canal
+    if zenity --title='Prévia do arquivo' --text-info --filename="$HOME/.config/pulse/csm.pa"; then
+        [ -f ~/.config/pulse/default.pa ] || { [ -f /etc/pulse/default.pa ] && echo '.include /etc/pulse/default.pa' >> ~/.config/pulse/default.pa; }
+        grep "^.include $HOME/.config/pulse/csm.pa$" ~/.config/pulse/default.pa || echo "
+.include $HOME/.config/pulse/csm.pa" >> ~/.config/pulse/default.pa
+    fi
 }
