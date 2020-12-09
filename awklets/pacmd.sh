@@ -4,7 +4,7 @@
 # Função base - argumento 
 sink_data_get() (
     cd awklets
-    pacmd list-sinks | awk '
+    pacmd list-sinks | gawk '
     @include "sink-data-get.awk"
     function data_get() {
         '"$1"'
